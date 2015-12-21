@@ -1,0 +1,22 @@
+<html>
+<head></head>
+<body>
+	<canvas id="myCanvas"></canvas>
+</body>
+<script>
+	var latte_renderer =  latte.require("latte_renderer");
+	var renderer = latte_renderer.get("myCanvas");
+	renderer.set("root", {
+		width: 100,
+		height: 100,
+		point: {
+			x: 100,
+			y: 100
+		}
+	});
+	renderer.query("root").on("click", function(event) {
+		console.log("点击");
+	});
+	renderer.start();
+</script>
+</html>
