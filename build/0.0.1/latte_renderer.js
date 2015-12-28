@@ -4275,9 +4275,57 @@ latte.config = {};
  		(function() {
  			var latte_lib = require("latte_lib");
  			var HashMap = require("./utils/hashMap")
- 			var renderers = new HashMap();
- 			var Renderer = require("./renderer");
+ 			var latte2ds = new HashMap();
  			var utils = require("./utils/lib");
+ 			var Renderer = require('./renderer')
+ 			, LatteObject = require("./object");	
+ 			var Latte2D = function(element, type) {
+ 				this.type = type || Latte2D.defaultType;
+	 			this.renderer = Renderer.create(element, this.type);
+	 			this.root = LatteObject.create("root", {
+	 				point: {
+	 					x: 0,
+	 					y: 0
+	 				}
+	 			});
+ 			};
+ 			latte_lib.inherits(Latte2D, latte_lib.events);
+ 			(function() {
+ 				this.run = function() {
+ 					this.renderer.clear();
+	 				var commands = this.root.update();
+	 				this.renderer.draw(commands);	
+	 			}
+	 			this.add = function(path, object) {
+	 				this.root.add(path, object);
+	 			}
+	 			this.query = function(path) {
+	 				return this.root.query(path);
+	 			}
+	 			this.start = function() {
+	 				var self = this;
+	 				var frame = function() {
+	 					self.run();
+	 					requestAnimationFrame(frame);
+	 				};
+	 				requestAnimationFrame(frame);
+	 				
+	 			}
+ 			}).call(Latte2D.prototype);
+ 			(function() {
+ 				this.types = {
+ 					"2d": {
+
+ 					},
+ 					"3d": {
+
+ 					}
+ 				}
+ 				this.defaultType = (function() {
+ 					return "2d";
+ 				})();
+ 			}).call(Latte2D);
+
  			this.get = function(element) {
  				
  				if(latte_lib.isString(element)) {
@@ -4291,14 +4339,13 @@ latte.config = {};
  				if(!utils.isDom(element,"canvas")) {
  					throw new Error("element type is not canvas  ");
  				}
- 				var renderer = renderers.get(element);
+ 				var latte2d = latte2ds.get(element);
  				if(!renderer) {
- 					renderer = new Renderer(element);
- 					renderers.push(element, renderer);
+ 					latte2d = new Latte2D(element);
+ 					latte2ds.push(element, latte2d);
  				}
- 				return renderer;
+ 				return latte2d;
  			}
-
  		}).call(module.exports);
  	});
 })(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
@@ -5209,6 +5256,100 @@ latte.config = {};
 })(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
 
 (function(define) {'use strict'
+	define("latte_renderer/object/index", ["require", "exports", "module", "window"],
+ 	function(require, exports, module, window) {
+ 		var latte_lib = require("latte_lib")
+ 			, Transform = require("./transform");
+ 		var ObjectBase = function(options) {
+ 			this.attribute = options;
+ 			this.childers = {};
+ 			this.partner = null;
+ 			this.name = "";
+ 			this.type = "object";
+ 			this.visible = true;
+ 			this.transform = Transform.create();
+ 		};
+ 		latte_lib.inherits(ObjectBase, latte_lib.events);
+ 		(function() {
+ 			this.getPath = function(root) {
+ 				if(this.partner == null) { return ""; }
+ 				var partner = this.partner;
+ 				var path = this.name;
+ 				//????如果child 名一样怎么办?
+ 				while(partner != root) {
+ 					path = partner.name + "/" + path;
+ 					partner = partner.partner;
+ 				}
+ 				return path;
+ 			}
+ 			this.addChild = function(child) {
+ 				this.childers[child.name] = this.childers[child.name] || [];
+ 				this.childers[child.name].push(child);
+ 				child.partner = this;
+ 			}
+ 			this.setAttribute = function(key, value) {
+ 				this.attribute[key] = value;
+ 			}
+ 			this.removeChilde = function(child) {
+ 				var index = this.childers[child.name].indexOf(child);
+ 				latte_lib.removeArray(this.childers[child.name], index);
+ 				child.partner = null;
+ 			}
+ 			this.query = function(paths) {
+ 				if(latte_lib.isString(paths)) {
+ 					paths = paths.split("/");					
+ 				}
+ 				var path = paths.shift();
+ 				if(!path) {
+ 					return [this];
+ 				}
+ 				var result = [];
+ 				if(this.childers[path]) {
+ 					this.childers[path].forEach(function(childer) {
+ 						result = result.concat(childer.query(path));
+ 					});
+ 				};
+ 				return result;
+ 			}
+ 			this.add = function(path, child) {
+ 				
+ 			}
+ 			this.update = function() {
+ 				var result = [];
+ 				var self = this;
+ 				Object.keys(this.childers).forEach(function(o) {
+ 					result = result.concat(self.childers[o].update(childer.update()));
+ 				});
+ 				return result;
+ 			}
+ 		}).call(ObjectBase.prototype);
+		(function() {
+			this.create = function() {
+				return new ObjectBase();
+			}
+		}).call(ObjectBase);
+ 		module.exports = ObjectBase;
+ 	});
+})(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
+
+(function(define) {'use strict'
+	define("latte_renderer/object/transform", ["require", "exports", "module", "window"],
+ 	function(require, exports, module, window) {
+ 		var Transform = function() {
+
+ 		};
+ 		(function() {
+
+ 		}).call(Transform.prototype);
+ 		(function() {
+ 			this.create = function() {
+ 				return new Transform();
+ 			}
+ 		}).call(module.exports);
+	});
+})(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
+
+(function(define) {'use strict'
 	define("latte_renderer/objects/2D/object2D", ["require", "exports", "module", "window"],
  	function(require, exports, module, window) {
  		var ObjectBase = require("../objectBase");
@@ -5253,13 +5394,13 @@ latte.config = {};
 (function(define) {'use strict'
 	define("latte_renderer/objects/objectBase", ["require", "exports", "module", "window"],
  	function(require, exports, module, window) {
+ 		var latte_lib = require("latte_lib");
  		var ObjectBase = function(options) {
  			this.attribute = options;
  			this.childers = {};
  			this.partner = null;
  			this.name = "";
- 			this.type = "objectBase";
- 			
+ 			this.type = "objectBase";			
  			this.visible = true;
  		};
  		latte_lib.inherits(ObjectBase, latte_lib.events);
@@ -5302,7 +5443,15 @@ latte.config = {};
  				});
  				return result;
  			}
+ 			this.add = function(path, child) {
+ 				
+ 			}
  		}).call(ObjectBase.prototype);
+		(function() {
+			this.create = function() {
+				return new ObjectBase();
+			}
+		}).call(ObjectBase);
  		module.exports = ObjectBase;
  	});
 })(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
@@ -5310,23 +5459,26 @@ latte.config = {};
 (function(define) {'use strict'
 	define("latte_renderer/renderer/2D/renderer2D", ["require", "exports", "module", "window"],
  	function(require, exports, module, window) {
- 		var Renderer3D = function(element, type) {
+ 		var Renderer2D = function(element, type) {
  			
  		};
  		(function() {
  			this.draw = function(commands) {
  				
  			}
- 		}).call(Renderer3D.prototype);
+ 			this.clear = function() {
 
- 		module.exports = Renderer3D;
+ 			}
+ 		}).call(Renderer2D.prototype);
+
+ 		module.exports = Renderer2D;
  	});
 })(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
 
 (function(define) {'use strict'
 	define("latte_renderer/renderer/3D/renderer3D", ["require", "exports", "module", "window"],
  	function(require, exports, module, window) {
- 		var Renderer2D = function(element, type) {
+ 		var Renderer3D = function(element, type) {
  			this.context = element.getContext("2d");
  		};
  		(function() {
@@ -5347,53 +5499,28 @@ latte.config = {};
  					break;
  				}
  			}
- 		}).call(Renderer2D.prototype);
+ 			this.clear = function() {
+ 				
+ 			}
+ 		}).call(Renderer3D.prototype);
 
- 		module.exports = Renderer2D;
+ 		module.exports = Renderer3D;
  	});
 })(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
 
 (function(define) {'use strict'
 	define("latte_renderer/renderer/index", ["require", "exports", "module", "window"],
  	function(require, exports, module, window) {
- 		var Renderer2D = require('./2D/renderer2D')
- 			, Renderer3D = require("./3D/renderer3D")
- 			, Object2D = require("../objects/2D/object2D")
- 			, Object3D = require("../objects/3D/object3D");
- 		var Renderer = function(element, type) {
- 			this.type = type || Renderer.defulatType;
- 			var all = Renderer.types[ this.type];
- 			if(!all) {
- 				throw new Error("no renderer");
- 			}
- 			this.renderer = new all.renderer();
- 			this.root = new all.object();
- 		};
  		(function() {
- 			this.run = function(object) {
- 				var commands = object.update();
- 				renderer.draw(commands);	
+ 			var self = this;
+ 			this.renderers = {
+ 				"2d": require("./2D/renderer2D"),
+ 				"3d": require("./3D/renderer3D")
  			}
- 		}).call(Renderer.prototype);
- 		(function() {
- 			this.set = function(path, object) {
- 				this.root.set.set(path, object);
+ 			this.create = function(element, type) {
+ 				return new self.renderers[type](element);
  			}
- 			this.defulatType = (function() {
- 				return "2d";
- 			})();
- 			this.types = {
- 				"2d": {
- 					renderer: Renderer2D,
- 					object: Object2D
- 				},
- 				"3d": {
- 					renderer: Renderer3D,
- 					object: Object3D
- 				}
- 			};
- 		}).call(Renderer);
- 		module.exports = Renderer;
+ 		}).call(module.exports);
  	});
 })(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
 

@@ -7,7 +7,7 @@
 <script>
 	var latte_renderer =  latte.require("latte_renderer");
 	var renderer = latte_renderer.get("myCanvas");
-	renderer.set("root", {
+	renderer.add("button", {
 		width: 100,
 		height: 100,
 		point: {
@@ -15,8 +15,11 @@
 			y: 100
 		}
 	});
-	renderer.query("root").on("click", function(event) {
-		console.log("点击");
+	var result = renderer.query("root");
+	result.forEach(function(o) {
+		o.on("click", function(event) {
+			console.log("点击");
+		});
 	});
 	renderer.start();
 </script>

@@ -1,1 +1,1 @@
-../latte_lib/build/latte_lib.js
+/home/qingjiao/Documents/github/latte/latte_lib/build/latte_lib.js
