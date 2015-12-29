@@ -4282,19 +4282,21 @@ latte.config = {};
  			var Latte2D = function(element, type) {
  				this.type = type || Latte2D.defaultType;
 	 			this.renderer = Renderer.create(element, this.type);
-	 			this.root = LatteObject.create("root", {
-	 				point: {
-	 					x: 0,
-	 					y: 0
-	 				}
+	 			this.root = LatteObject.create("root",{
+	 				x: 0, y:0, width: this.renderer.width, height: this.renderer.height
+	 			},{
+	 				backgroundColor: "#000000"
 	 			});
  			};
  			latte_lib.inherits(Latte2D, latte_lib.events);
  			(function() {
+ 				this.setRoot = function(func) {
+ 					func.call(this.root);
+ 				}
  				this.run = function() {
- 					this.renderer.clear();
-	 				var commands = this.root.update();
-	 				this.renderer.draw(commands);	
+ 					var result = [];
+	 				this.root.update(0, result);
+	 				this.renderer.draw(result);	
 	 			}
 	 			this.add = function(path, object) {
 	 				this.root.add(path, object);
@@ -5256,18 +5258,37 @@ latte.config = {};
 })(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
 
 (function(define) {'use strict'
+	define("latte_renderer/object/collision", ["require", "exports", "module", "window"],
+ 	function(require, exports, module, window) {
+ 		var Collision = function() {
+
+ 		};
+ 		(function() {
+
+ 		}).call(Collision.prototype);
+ 		(function() {
+ 			this.create =function() {
+ 				return new Collision();
+ 			}
+ 		}).call(module.exports);
+ 	});
+})(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
+
+(function(define) {'use strict'
 	define("latte_renderer/object/index", ["require", "exports", "module", "window"],
  	function(require, exports, module, window) {
  		var latte_lib = require("latte_lib")
- 			, Transform = require("./transform");
- 		var ObjectBase = function(options) {
- 			this.attribute = options;
+ 			, Transform = require("./transform")
+ 			, Collision = require("./collision");
+ 		var ObjectBase = function(name, transform, options) {
+ 			this.attribute = options || {};
  			this.childers = {};
  			this.partner = null;
- 			this.name = "";
+ 			this.name = name;
  			this.type = "object";
  			this.visible = true;
- 			this.transform = Transform.create();
+ 			this.transform = Transform.create(transform);
+ 			this.collision = Collision.create();
  		};
  		latte_lib.inherits(ObjectBase, latte_lib.events);
  		(function() {
@@ -5311,20 +5332,51 @@ latte.config = {};
  				};
  				return result;
  			}
- 			this.add = function(path, child) {
+ 			this.add = function(paths, child) {
+ 				if(latte_lib.isString(paths)) {
+ 					paths = paths.split("/");
+ 				}
  				
+ 				if(!paths.length) {
+ 					return this.addChild(child);
+ 				}
+ 				var path = paths.shift();
+ 				if(this.childers[path]) {
+ 					this.childers[path].forEach(function(childer) {
+ 						childer.add(latte_lib.copy(paths), child);
+ 					});
+ 				}else{
+ 					var mchild = ObjectBase.create(path);
+ 					this.addChild(mchild);
+ 					mchild.add(paths, child);
+ 				}
  			}
- 			this.update = function() {
- 				var result = [];
+
+ 			this.update = function(index, result, partnerTran) {
  				var self = this;
+ 				var	partnerTram = this.doUpdate(index, result, partnerTran);
+ 				index++;
  				Object.keys(this.childers).forEach(function(o) {
- 					result = result.concat(self.childers[o].update(childer.update()));
+ 					self.childers[o].forEach(function(child) {
+ 						child.update(index, result, partnerTram);
+ 					});
  				});
  				return result;
  			}
+ 			this.doUpdate = function(index, result, partner) {
+ 				var trandom = this.transform.update(partner);
+ 				trandom.type = "rectangle";
+ 				trandom.index = index;
+ 				trandom.backgroundColor = this.attribute.backgroundColor;
+ 				result.push(trandom);
+ 				return trandom;
+ 			}
  		}).call(ObjectBase.prototype);
 		(function() {
-			this.create = function() {
+			this.create = function(name, transform, attribute) {
+				return new ObjectBase(name, transform, attribute);
+			}
+			this.createDefault = function() {
 				return new ObjectBase();
 			}
 		}).call(ObjectBase);
@@ -5335,139 +5387,86 @@ latte.config = {};
 (function(define) {'use strict'
 	define("latte_renderer/object/transform", ["require", "exports", "module", "window"],
  	function(require, exports, module, window) {
- 		var Transform = function() {
-
+ 		var Transform = function(config) {
+ 			this.x = config.x || 0;
+ 			this.y = config.y || 0;
+ 			this.width = config.width || 0;
+ 			this.height = config.height || 0;
+ 			this.position = config.position || "relative";
  		};
  		(function() {
+ 			this.update = function(partnerTransform) {
+ 				if(!partnerTransform) { partnerTransform = Transform.defaultObject; }
+ 				var result = {};
+ 				switch(this.position) {
+ 					case "absolute":
+ 						result.x = this.x;
+ 						result.y = this.y;
+ 						result.width = this.width;
+ 						result.height = this.height;
+ 					break;
+ 					case "relative":
+ 					default:
+ 						result.x = partnerTransform.x + this.x;
+		 				result.y = partnerTransform.y + this.y;
+		 				result.width = this.width;
+		 				result.height = this.height;
+ 					break;
+ 				}
+ 				return result;
+ 				//result.rotation = Transform.rotation(partnerTransform.rotation, this);
 
+ 			}
  		}).call(Transform.prototype);
  		(function() {
- 			this.create = function() {
- 				return new Transform();
+ 			this.defaultObject = {
+ 				x: 0,
+ 				y: 0,
+ 				width: 0,
+ 				height : 0
+ 			}
+ 		}).call(Transform);
+ 		(function() {
+ 			this.create = function(config) {
+ 				if(!config) {
+ 					config = {};
+ 				}
+ 				return new Transform(config);
  			}
  		}).call(module.exports);
 	});
 })(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
 
 (function(define) {'use strict'
-	define("latte_renderer/objects/2D/object2D", ["require", "exports", "module", "window"],
- 	function(require, exports, module, window) {
- 		var ObjectBase = require("../objectBase");
- 		var Object2D = function(options, transform) {
- 			ObjectBase.call(this, options);
- 			this.type = "Object2D";
- 			//
- 			this.transform = new Transform2D()
- 		};
- 		latte_lib.inherits(Object2D, ObjectBase);
- 		(function() {
- 			
- 		}).call(Object2D.prototype);
- 		
- 		module.exports = Object2D;
- 	});
-})(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
-
-(function(define) {'use strict'
-	define("latte_renderer/objects/2D/transform2D", ["require", "exports", "module", "window"],
- 	function(require, exports, module, window) {
- 		var Vector2 = require("../../math/Vector2");
- 		var Transform2D = function() {
- 			//位置
- 			this.point = new Vector2();			
- 			//尺度
- 			this.scale = new Vector2(1,1);
- 			//旋转
- 			this.rotation = new Euler();
- 			//四元
- 			this.quaternion = new Quaternion();
-
-
- 		};
- 		(function() {
- 			
- 		}).call(Transform2D.prototype);
- 		module.exports = Transform2D;
- 	});
-})(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
-
-(function(define) {'use strict'
-	define("latte_renderer/objects/objectBase", ["require", "exports", "module", "window"],
- 	function(require, exports, module, window) {
- 		var latte_lib = require("latte_lib");
- 		var ObjectBase = function(options) {
- 			this.attribute = options;
- 			this.childers = {};
- 			this.partner = null;
- 			this.name = "";
- 			this.type = "objectBase";			
- 			this.visible = true;
- 		};
- 		latte_lib.inherits(ObjectBase, latte_lib.events);
- 		(function() {
- 			this.getPath = function(root) {
- 				if(this.partner == null) { return ""; }
- 				var partner = this.partner;
- 				var path = this.name;
- 				//????如果child 名一样怎么办?
- 				while(partner != root) {
- 					path = partner.name + "/" + path;
- 					partner = partner.partner;
- 				}
- 				return path;
- 			}
- 			this.addChild = function(child) {
- 				this.childers[child.name] = this.childers[child.name] || [];
- 				this.childers[child.name].push(child);
- 				child.partner = this;
- 			}
- 			this.setAttribute = function(key, value) {
- 				this.attribute[key] = value;
- 			}
- 			this.removeChilde = function(child) {
- 				var index = this.childers[child.name].indexOf(child);
- 				latte_lib.removeArray(this.childers[child.name], index);
- 				child.partner = null;
- 			}
- 			this.query = function(path) {
- 				if(latte_lib.isString(path)) {
- 					path = path.split("/");					
- 				}
- 				var path = paths.shift();
- 				if(!path) {
- 					return this;
- 				}
- 				var result = [];
- 				this.childers[path].forEach(function(childer) {
- 					result = result.concat(childer.query(path));
- 				});
- 				return result;
- 			}
- 			this.add = function(path, child) {
- 				
- 			}
- 		}).call(ObjectBase.prototype);
-		(function() {
-			this.create = function() {
-				return new ObjectBase();
-			}
-		}).call(ObjectBase);
- 		module.exports = ObjectBase;
- 	});
-})(typeof define === "function"? define: function(name, reqs, factory) {factory(require, exports, module); });
-
-(function(define) {'use strict'
 	define("latte_renderer/renderer/2D/renderer2D", ["require", "exports", "module", "window"],
  	function(require, exports, module, window) {
  		var Renderer2D = function(element, type) {
- 			
+ 			this.context = element.getContext("2d");
+ 			this.width = element.width;
+ 			this.height = element.height;
  		};
  		(function() {
  			this.draw = function(commands) {
- 				
+ 				var self = this;
+ 				commands.forEach(function(command) {
+ 					self.drawOne(command);
+ 				});
+ 			}
+ 			this.drawOne = function(command) {
+ 				switch(command.type) {
+ 					case "image":
+ 						var image = command.image;
+ 						this.context.drawIamge(image.resources, image.x, image.y, image.width, image.height,
+ 								command.x, command.y, command.width || image.width, command.height || image.height);
+ 					break;
+ 					case "rectangle":
+ 						this.context.fillStyle = command.backgroundColor;
+            			this.context.fillRect(command.x,command.y,command.width,command.height);
+ 					break;
+ 				}
  			}
  			this.clear = function() {
-
+ 				this.context.clearRect(0,0,this.width, this.height);
  			}
  		}).call(Renderer2D.prototype);
 
