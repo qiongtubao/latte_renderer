@@ -14,7 +14,7 @@
 	var button = ObjectLatte.create("button", {
 		x: 30,y : 30, width: 50, height: 50
 	}, {backgroundColor: "#FFFFFF"});
-	renderer.add("", button);
+	renderer.add([], button);
 	renderer.add("button", text);
 	var queryResult = renderer.root.query("text");
 	console.log(renderer);
@@ -25,6 +25,6 @@
 			console.log("点击");
 		});
 	});
-	renderer.start();
+	renderer.startOne();
 </script>
 </html>
