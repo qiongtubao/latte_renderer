@@ -19,11 +19,12 @@
 	var queryResult = renderer.root.query("text");
 	console.log(renderer);
 	console.log(text.getPath())
-	var result = renderer.query("root");
-	result.forEach(function(o) {
-		o.on("click", function(event) {
-			console.log("点击");
-		});
+	text.on("click", function(o) {
+		console.log(o.object.getPath());
+		o.stop = true;
+	});
+	button.on("click", function(o) {
+		console.log(o, button);
 	});
 	renderer.startOne();
 </script>
