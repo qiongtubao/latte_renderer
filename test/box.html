@@ -1,0 +1,20 @@
+<html>
+<head></head>
+<body>
+	<canvas id="myCanvas"></canvas>
+</body>
+<script type="text/javascript" src="./latte_renderer.js"></script>
+<script>
+	var latte_renderer =  latte.require("latte_renderer");
+	var renderer = latte_renderer.get("myCanvas");
+	var ObjectLatte = latte.require("latte_renderer/object");
+	var Vector2 = latte.require("latte_renderer/math/vector2");
+	//设置world
+	renderer.setWorld(Vector2.create(0, 10), true);
+	var fixDef = new b2fixtureDef();
+	fixDef.density = 1.0;
+	fixDef.friction = 0.5;
+	fixDef.restitution = 0.2;
+	renderer.startOne();
+</script>
+</html>
