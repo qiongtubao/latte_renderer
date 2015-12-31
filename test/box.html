@@ -9,6 +9,23 @@
 	var renderer = latte_renderer.get("myCanvas");
 	var ObjectLatte = latte.require("latte_renderer/object");
 	var Vector2 = latte.require("latte_renderer/math/vector2");
-	var renderer
+	//设置world
+	renderer.setWorld(Vector2.create(0, 10), true);
+	//夹具  把形状绑定到物体上 并有一定的材料属性
+	var fixDef = new b2fixtureDef();
+	fixDef.density = 1.0;//密度
+	fixDef.friction = 0.5;//摩擦
+	fixDef.restitution = 0.2;// 恢复
+
+	var bodyDef = new b2BodyDef;
+	bodyDef.type = b2Body.b2_staticBody;
+	//形状  多边形
+	fixDef.shape = new b2PolygonShape;
+	fixDef.shape.SetAsBox(20, 2);
+
+	bodyDef.position.Set(10, -1.8);
+	
+
+	renderer.startOne();
 </script>
 </html>
