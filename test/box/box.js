@@ -3157,6 +3157,7 @@ Box2D.postDefs = [];
       this.m_normals[2].Set(0.0, 1.0);
       this.m_normals[3].Set((-1.0), 0.0);
       this.m_centroid.SetZero();
+      debugger;
    }
    b2PolygonShape.AsBox = function (hx, hy) {
       if (hx === undefined) hx = 0;
@@ -6522,6 +6523,7 @@ Box2D.postDefs = [];
             var vertexCount = parseInt(poly.GetVertexCount());
             var localVertices = poly.GetVertices();
             var vertices = new Vector(vertexCount);
+            debugger;
             for (i = 0;
             i < vertexCount; ++i) {
                vertices[i] = b2Math.MulX(xf, localVertices[i]);
