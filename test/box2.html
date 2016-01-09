@@ -34,7 +34,8 @@
          fixDef.shape = new b2PolygonShape;
          fixDef.shape.SetAsBox(20, 2);
          bodyDef.position.Set(10, 400 / 30 + 1.8);
-         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         var body = world.CreateBody(bodyDef);
+         fixture = body.CreateFixture(fixDef);
          bodyDef.position.Set(10, -1.8);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
          fixDef.shape.SetAsBox(2, 14);
@@ -48,13 +49,13 @@
          bodyDef.type = b2Body.b2_dynamicBody;
          for(var i = 0; i < 10; ++i) {
             if(Math.random() > 0.5) {
-               debugger;
+               //debugger;
                fixDef.shape = new b2PolygonShape();
                fixDef.shape.SetAsBox(
                      Math.random() + 0.1 //half width
                   ,  Math.random() + 0.1 //half height
                );
-               debugger;
+               //debugger;
             } else {
                fixDef.shape = new b2CircleShape(
                   Math.random() + 0.1 //radius

@@ -1256,7 +1256,6 @@ Box2D.postDefs = [];
       return true;
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Collision.b2Collision.s_incidentEdge = b2Collision.MakeClipPointVector();
       Box2D.Collision.b2Collision.s_clipPoints1 = b2Collision.MakeClipPointVector();
       Box2D.Collision.b2Collision.s_clipPoints2 = b2Collision.MakeClipPointVector();
@@ -1410,7 +1409,6 @@ Box2D.postDefs = [];
       }
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Collision.b2Distance.s_simplex = new b2Simplex();
       Box2D.Collision.b2Distance.s_saveA = new Vector_a2j_Number(3);
       Box2D.Collision.b2Distance.s_saveB = new Vector_a2j_Number(3);
@@ -1852,7 +1850,6 @@ Box2D.postDefs = [];
       return copy;
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Collision.b2Manifold.e_circles = 0x0001;
       Box2D.Collision.b2Manifold.e_faceA = 0x0002;
       Box2D.Collision.b2Manifold.e_faceB = 0x0004;
@@ -2172,7 +2169,6 @@ Box2D.postDefs = [];
       }
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Collision.b2SeparationFunction.e_points = 0x01;
       Box2D.Collision.b2SeparationFunction.e_faceA = 0x02;
       Box2D.Collision.b2SeparationFunction.e_faceB = 0x04;
@@ -2517,7 +2513,6 @@ Box2D.postDefs = [];
       return alpha;
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Collision.b2TimeOfImpact.b2_toiCalls = 0;
       Box2D.Collision.b2TimeOfImpact.b2_toiIters = 0;
       Box2D.Collision.b2TimeOfImpact.b2_toiMaxIters = 0;
@@ -3162,7 +3157,6 @@ Box2D.postDefs = [];
       this.m_normals[2].Set(0.0, 1.0);
       this.m_normals[3].Set((-1.0), 0.0);
       this.m_centroid.SetZero();
-      debugger;
    }
    b2PolygonShape.AsBox = function (hx, hy) {
       if (hx === undefined) hx = 0;
@@ -3559,7 +3553,6 @@ Box2D.postDefs = [];
       }
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Collision.Shapes.b2PolygonShape.s_mat = new b2Mat22();
    });
    b2Shape.b2Shape = function () {};
@@ -3697,7 +3690,6 @@ Box2D.postDefs = [];
       }
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Common.b2Settings.VERSION = "2.1alpha";
       Box2D.Common.b2Settings.USHRT_MAX = 0x0000ffff;
       Box2D.Common.b2Settings.b2_pi = Math.PI;
@@ -4082,7 +4074,6 @@ Box2D.postDefs = [];
       return result;
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Common.Math.b2Math.b2Vec2_zero = new b2Vec2(0.0, 0.0);
       Box2D.Common.Math.b2Math.b2Mat22_identity = b2Mat22.FromVV(new b2Vec2(1.0, 0.0), new b2Vec2(0.0, 1.0));
       Box2D.Common.Math.b2Math.b2Transform_identity = new b2Transform(b2Math.b2Vec2_zero, b2Math.b2Mat22_identity);
@@ -5033,7 +5024,6 @@ Box2D.postDefs = [];
       this.SynchronizeTransform();
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.b2Body.s_xf1 = new b2Transform();
       Box2D.Dynamics.b2Body.e_islandFlag = 0x0001;
       Box2D.Dynamics.b2Body.e_awakeFlag = 0x0002;
@@ -5080,7 +5070,6 @@ Box2D.postDefs = [];
       return this.ShouldCollide((userData instanceof b2Fixture ? userData : null), fixture);
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.b2ContactFilter.b2_defaultFilter = new b2ContactFilter();
    });
    b2ContactImpulse.b2ContactImpulse = function () {
@@ -5093,7 +5082,6 @@ Box2D.postDefs = [];
    b2ContactListener.prototype.PreSolve = function (contact, oldManifold) {}
    b2ContactListener.prototype.PostSolve = function (contact, impulse) {}
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.b2ContactListener.b2_defaultListener = new b2ContactListener();
    });
    b2ContactManager.b2ContactManager = function () {};
@@ -5238,7 +5226,6 @@ Box2D.postDefs = [];
       }
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.b2ContactManager.s_evalCP = new b2ContactPoint();
    });
    b2DebugDraw.b2DebugDraw = function () {};
@@ -5290,7 +5277,6 @@ Box2D.postDefs = [];
    b2DebugDraw.prototype.DrawSegment = function (p1, p2, color) {}
    b2DebugDraw.prototype.DrawTransform = function (xf) {}
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.b2DebugDraw.e_shapeBit = 0x0001;
       Box2D.Dynamics.b2DebugDraw.e_jointBit = 0x0002;
       Box2D.Dynamics.b2DebugDraw.e_aabbBit = 0x0004;
@@ -5694,7 +5680,6 @@ Box2D.postDefs = [];
       this.m_joints[this.m_jointCount++] = joint;
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.b2Island.s_impulse = new b2ContactImpulse();
    });
    b2TimeStep.b2TimeStep = function () {};
@@ -6537,7 +6522,6 @@ Box2D.postDefs = [];
             var vertexCount = parseInt(poly.GetVertexCount());
             var localVertices = poly.GetVertices();
             var vertices = new Vector(vertexCount);
-            debugger;
             for (i = 0;
             i < vertexCount; ++i) {
                vertices[i] = b2Math.MulX(xf, localVertices[i]);
@@ -6554,7 +6538,6 @@ Box2D.postDefs = [];
       }
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.b2World.s_timestep2 = new b2TimeStep();
       Box2D.Dynamics.b2World.s_xf = new b2Transform();
       Box2D.Dynamics.b2World.s_backupA = new b2Sweep();
@@ -6827,7 +6810,6 @@ Box2D.postDefs = [];
       return b2TimeOfImpact.TimeOfImpact(b2Contact.s_input);
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.Contacts.b2Contact.e_sensorFlag = 0x0001;
       Box2D.Dynamics.Contacts.b2Contact.e_continuousFlag = 0x0002;
       Box2D.Dynamics.Contacts.b2Contact.e_islandFlag = 0x0004;
@@ -7342,7 +7324,6 @@ Box2D.postDefs = [];
       return minSeparation > (-1.5 * b2Settings.b2_linearSlop);
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.Contacts.b2ContactSolver.s_worldManifold = new b2WorldManifold();
       Box2D.Dynamics.Contacts.b2ContactSolver.s_psm = new b2PositionSolverManifold();
    });
@@ -7523,7 +7504,6 @@ Box2D.postDefs = [];
       }
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.Contacts.b2PositionSolverManifold.circlePointA = new b2Vec2();
       Box2D.Dynamics.Contacts.b2PositionSolverManifold.circlePointB = new b2Vec2();
    });
@@ -8593,7 +8573,6 @@ Box2D.postDefs = [];
       return false;
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.Joints.b2Joint.e_unknownJoint = 0;
       Box2D.Dynamics.Joints.b2Joint.e_revoluteJoint = 1;
       Box2D.Dynamics.Joints.b2Joint.e_prismaticJoint = 2;
@@ -10073,7 +10052,6 @@ Box2D.postDefs = [];
       return linearError < b2Settings.b2_linearSlop;
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.Joints.b2PulleyJoint.b2_minPulleyLength = 2.0;
    });
    Box2D.inherit(b2PulleyJointDef, Box2D.Dynamics.Joints.b2JointDef);
@@ -10502,7 +10480,6 @@ Box2D.postDefs = [];
       return positionError <= b2Settings.b2_linearSlop && angularError <= b2Settings.b2_angularSlop;
    }
    Box2D.postDefs.push(function () {
-      debugger;
       Box2D.Dynamics.Joints.b2RevoluteJoint.tImpulse = new b2Vec2();
    });
    Box2D.inherit(b2RevoluteJointDef, Box2D.Dynamics.Joints.b2JointDef);
