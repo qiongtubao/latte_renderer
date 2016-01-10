@@ -6003,11 +6003,15 @@ Box2D.postDefs = [];
       var vs = [new b2Vec2(), new b2Vec2(), new b2Vec2(), new b2Vec2()];
       var color = new b2Color(0, 0, 0);
       if (flags & b2DebugDraw.e_shapeBit) {
+         
          for (b = this.m_bodyList;
          b; b = b.m_next) {
             xf = b.m_xf;
+ 
+            
             for (f = b.GetFixtureList();
             f; f = f.m_next) {
+               
                s = f.GetShape();
                if (b.IsActive() == false) {
                   color.Set(0.5, 0.5, 0.3);
@@ -6029,8 +6033,10 @@ Box2D.postDefs = [];
                   color.Set(0.9, 0.7, 0.7);
                   this.DrawShape(s, xf, color);
                }
+               
             }
          }
+         
       }
       if (flags & b2DebugDraw.e_jointBit) {
          for (j = this.m_jointList;
