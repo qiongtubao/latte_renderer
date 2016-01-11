@@ -3344,7 +3344,8 @@ Box2D.postDefs = [];
          var ex2 = e2X;
          var ey2 = e2Y;
          var intx2 = k_inv3 * (0.25 * (ex1 * ex1 + ex2 * ex1 + ex2 * ex2) + (px * ex1 + px * ex2)) + 0.5 * px * px;
-         var inty2 = k_inv3 * (0.25 * (ey1 * ey1 + ey2 * ey1 + ey2 * ey2) + (py * ey1 + py * ey2)) + 0.5 * py * py;I += D * (intx2 + inty2);
+         var inty2 = k_inv3 * (0.25 * (ey1 * ey1 + ey2 * ey1 + ey2 * ey2) + (py * ey1 + py * ey2)) + 0.5 * py * py;
+         I += D * (intx2 + inty2);
       }
       massData.mass = density * area;
       centerX *= 1.0 / area;
