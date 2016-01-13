@@ -16,7 +16,9 @@
             , b2PolygonShape = latte.require("latte_renderer/object/box/collision/shapes/b2PolygonShape")
             , b2CircleShape = latte.require("latte_renderer/object/box/collision/shapes/b2CircleShape")
             , b2DebugDraw = latte.require("latte_renderer/object/box/dynamics/b2DebugDraw")
-            , b2AABB = latte.require("latte_renderer/object/box/collision/b2AABB");
+            , b2AABB = latte.require("latte_renderer/object/box/collision/b2AABB")
+            , b2MouseJointDef = latte.require("latte_renderer/object/box/dynamics/joints/b2MouseJointDef");
+
    	   	var world = new b2World(
                new b2Vec2(0, 10)    //gravity
             ,  true                 //allow sleep
