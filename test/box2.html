@@ -30,7 +30,7 @@
          var bodyDef = new b2BodyDef;
          
          //create ground
-         /**
+         
          bodyDef.type = b2Body.b2_staticBody;
          
          fixDef.shape = new b2PolygonShape;
@@ -45,10 +45,10 @@
          world.CreateBody(bodyDef).CreateFixture(fixDef);
          bodyDef.position.Set(21.8, 13);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
-        */ 
+        
          bodyDef.type = b2Body.b2_dynamicBody;
          //create some objects
-         /**
+         
          
          for(var i = 0; i < 10; ++i) {
             if(Math.random() > 0.5) {
@@ -68,7 +68,7 @@
             bodyDef.position.y = Math.random() * 10;
             world.CreateBody(bodyDef).CreateFixture(fixDef);
          }
-         */
+         /**
          fixDef.shape = new b2PolygonShape;
          fixDef.shape.SetAsBox(
              0.3,
@@ -82,7 +82,7 @@
             0.3
          );
          world.CreateBody(bodyDef).CreateFixture(fixDef);
-         
+         **/
          //setup debug draw
          var debugDraw = new b2DebugDraw();
          debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
