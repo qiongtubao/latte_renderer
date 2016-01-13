@@ -34,7 +34,7 @@
          fixDef.restitution = 0.2;
          
          var bodyDef = new b2BodyDef;
-         /**
+         
          //create ground
          bodyDef.type = b2Body.b2_staticBody;
          fixDef.shape = new b2PolygonShape;
@@ -49,7 +49,7 @@
          world.CreateBody(bodyDef).CreateFixture(fixDef);
          bodyDef.position.Set(21.8, 13);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
-         */
+         
          
          //create some objects
          bodyDef.type = b2Body.b2_dynamicBody;
@@ -77,8 +77,8 @@
              0.3
          );
          bodyDef.position.x = 5;
-         bodyDef.position.y = 5;
-         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         bodyDef.position.y = 13;
+         //world.CreateBody(bodyDef).CreateFixture(fixDef);
 
          fixDef.shape = new b2CircleShape(
             0.3

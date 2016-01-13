@@ -49,7 +49,7 @@
          bodyDef.type = b2Body.b2_dynamicBody;
          //create some objects
          
-         
+         /**
          for(var i = 0; i < 10; ++i) {
             if(Math.random() > 0.5) {
                //debugger;
@@ -68,21 +68,23 @@
             bodyDef.position.y = Math.random() * 10;
             world.CreateBody(bodyDef).CreateFixture(fixDef);
          }
-         /**
+         */
+         
          fixDef.shape = new b2PolygonShape;
+         
          fixDef.shape.SetAsBox(
              0.3,
              0.3
          );
          bodyDef.position.x = 5;
-         bodyDef.position.y = 5;
-         world.CreateBody(bodyDef).CreateFixture(fixDef);
-
+         bodyDef.position.y = 13;
+         //world.CreateBody(bodyDef).CreateFixture(fixDef);
+         
          fixDef.shape = new b2CircleShape(
             0.3
          );
          world.CreateBody(bodyDef).CreateFixture(fixDef);
-         **/
+         
          //setup debug draw
          var debugDraw = new b2DebugDraw();
          debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
