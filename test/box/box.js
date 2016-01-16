@@ -4411,6 +4411,18 @@ Box2D.postDefs = [];
       this.m_linearVelocity = new b2Vec2();
       this.m_force = new b2Vec2();
    };
+   Object.defineProperty(b2Body.prototype, "m_flags", {
+         enumerable: true
+       , get: function() {
+         return this._m_flags;
+       },
+       set: function(value) {
+         if(value == 37 || value == 36) {
+            debugger;
+         }
+         this._m_flags = value;
+       }
+   });
    b2Body.prototype.connectEdges = function (s1, s2, angle1) {
       if (angle1 === undefined) angle1 = 0;
       var angle2 = Math.atan2(s2.GetDirectionVector().y, s2.GetDirectionVector().x);
@@ -5586,6 +5598,9 @@ Box2D.postDefs = [];
                b.m_sleepTime += step.dt;
                minSleepTime = b2Math.Min(minSleepTime, b.m_sleepTime);
             }
+         }
+         if(minSleepTime != 0.0) {
+            debugger;
          }
          if (minSleepTime >= b2Settings.b2_timeToSleep) {
             for (i = 0;
