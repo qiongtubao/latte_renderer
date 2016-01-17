@@ -1797,6 +1797,7 @@ Box2D.postDefs = [];
       this.m_tree.Rebalance(iterations);
    }
    b2DynamicTreeBroadPhase.prototype.BufferMove = function (proxy) {
+      debugger;
       this.m_moveBuffer[this.m_moveBuffer.length] = proxy;
    }
    b2DynamicTreeBroadPhase.prototype.UnBufferMove = function (proxy) {
