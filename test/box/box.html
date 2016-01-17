@@ -173,6 +173,7 @@
             if(isMouseDown && (!mouseJoint)) {
                var body = getBodyAtMouse();
                if(body) {
+                  /**
                   var md = new b2MouseJointDef();
                   md.bodyA = world.GetGroundBody();
                   md.bodyB = body;
@@ -181,6 +182,17 @@
                   md.maxForce = 300.0 * body.GetMass();
                   mouseJoint = world.CreateJoint(md);
                   body.SetAwake(true);
+                  */
+                 var md = new b2MouseJointDef();
+                 md.bodyA = world.GetGroundBody();
+                 md.bodyB = body;
+                 var mouseX = 4.97066650390625;
+                 var mouseY = 12.560333251953125;
+                 md.target.Set(mouseX, mouseY);
+                 md.collideConnected = true;
+                 md.maxForce = 300.0 * body.GetMass();
+                 mouseJoint = world.CreateJoint(md);
+                 body.SetAwake(true);
                }
             }
             

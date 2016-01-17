@@ -4411,15 +4411,27 @@ Box2D.postDefs = [];
       this.m_linearVelocity = new b2Vec2();
       this.m_force = new b2Vec2();
    };
+   Object.defineProperty(b2Body.prototype, "m_angularVelocity", {
+         enumerable: true
+       , get: function() {
+         return this._m_angularVelocity;
+       },
+       set: function(value) {
+         console.log(value);
+         if(value != 0) {
+            debugger;
+         }
+         
+         this._m_angularVelocity = value;
+       }
+   });
    Object.defineProperty(b2Body.prototype, "m_flags", {
          enumerable: true
        , get: function() {
          return this._m_flags;
        },
        set: function(value) {
-         if(value == 37 || value == 36) {
-            debugger;
-         }
+         
          this._m_flags = value;
        }
    });
@@ -5599,9 +5611,7 @@ Box2D.postDefs = [];
                minSleepTime = b2Math.Min(minSleepTime, b.m_sleepTime);
             }
          }
-         if(minSleepTime != 0.0) {
-            debugger;
-         }
+         
          if (minSleepTime >= b2Settings.b2_timeToSleep) {
             for (i = 0;
             i < this.m_bodyCount; ++i) {
