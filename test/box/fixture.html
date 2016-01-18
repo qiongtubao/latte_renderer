@@ -48,8 +48,8 @@
          bodyDef.position.Set(-1.8, 13);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
          bodyDef.position.Set(21.8, 13);
-         world.CreateBody(bodyDef).CreateFixture(fixDef);
-         
+         var fixture = world.CreateBody(bodyDef).CreateFixture(fixDef);
+         console.log(fixture.GetMassData());
          
          //create some objects
          bodyDef.type = b2Body.b2_dynamicBody;
@@ -83,8 +83,8 @@
          fixDef.shape = new b2CircleShape(
             0.3
          );
-         world.CreateBody(bodyDef).CreateFixture(fixDef);
-
+         var qiu = world.CreateBody(bodyDef).CreateFixture(fixDef);
+         console.log(qiu.GetMassData());
 
          //setup debug draw
          var debugDraw = new b2DebugDraw();
@@ -95,7 +95,7 @@
 			debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 			world.SetDebugDraw(debugDraw);
          
-         window.setInterval(update, 1000 / 60);
+        // window.setInterval(update, 1000 / 60);
          
          //mouse
          
@@ -186,8 +186,8 @@
                  var md = new b2MouseJointDef();
                  md.bodyA = world.GetGroundBody();
                  md.bodyB = body;
-                 var mouseX = 300;
-                 var mouseY = 0;
+                 var mouseX = 4.97066650390625;
+                 var mouseY = 12.560333251953125;
                  md.target.Set(mouseX, mouseY);
                  md.collideConnected = true;
                  md.maxForce = 300.0 * body.GetMass();

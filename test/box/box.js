@@ -1797,7 +1797,6 @@ Box2D.postDefs = [];
       this.m_tree.Rebalance(iterations);
    }
    b2DynamicTreeBroadPhase.prototype.BufferMove = function (proxy) {
-      debugger;
       this.m_moveBuffer[this.m_moveBuffer.length] = proxy;
    }
    b2DynamicTreeBroadPhase.prototype.UnBufferMove = function (proxy) {
@@ -4075,6 +4074,7 @@ Box2D.postDefs = [];
       var result = x > 0 && (x & (x - 1)) == 0;
       return result;
    }
+   
    Box2D.postDefs.push(function () {
       Box2D.Common.Math.b2Math.b2Vec2_zero = new b2Vec2(0.0, 0.0);
       Box2D.Common.Math.b2Math.b2Mat22_identity = b2Mat22.FromVV(new b2Vec2(1.0, 0.0), new b2Vec2(0.0, 1.0));
@@ -4157,10 +4157,21 @@ Box2D.postDefs = [];
       this.x = x_;
       this.y = y_;
    }
+   Object.defineProperty(b2Vec2.prototype, "y", {
+               enumerable: true
+             , get: function() {
+               return this._y;
+             },
+             set: function(value) {
+               
+               this._y = value;
+             }
+         });
    b2Vec2.prototype.SetZero = function () {
       this.x = 0.0;
       this.y = 0.0;
    }
+
    b2Vec2.prototype.Set = function (x_, y_) {
       if (x_ === undefined) x_ = 0;
       if (y_ === undefined) y_ = 0;
@@ -4418,10 +4429,6 @@ Box2D.postDefs = [];
          return this._m_angularVelocity;
        },
        set: function(value) {
-         console.log(value);
-         if(value != 0) {
-            debugger;
-         }
          
          this._m_angularVelocity = value;
        }
@@ -4432,7 +4439,6 @@ Box2D.postDefs = [];
          return this._m_flags;
        },
        set: function(value) {
-         
          this._m_flags = value;
        }
    });
@@ -4864,6 +4870,7 @@ Box2D.postDefs = [];
    }
    b2Body.prototype.SetAwake = function (flag) {
       if (flag) {
+         debugger;
          this.m_flags |= b2Body.e_awakeFlag;
          this.m_sleepTime = 0.0;
       }
@@ -5450,11 +5457,13 @@ Box2D.postDefs = [];
       broadPhase.DestroyProxy(this.m_proxy);
       this.m_proxy = null;
    }
+   var d = 0;
    b2Fixture.prototype.Synchronize = function (broadPhase, transform1, transform2) {
       if (!this.m_proxy) return;
       var aabb1 = new b2AABB();
       var aabb2 = new b2AABB();
       this.m_shape.ComputeAABB(aabb1, transform1);
+      console.log(aabb2, d++);
       this.m_shape.ComputeAABB(aabb2, transform2);
       this.m_aabb.Combine(aabb1, aabb2);
       var displacement = b2Math.SubtractVV(transform2.position, transform1.position);
@@ -5995,6 +6004,7 @@ Box2D.postDefs = [];
       if (step.dt > 0.0) {
          this.Solve(step);
       }
+      
       if (b2World.m_continuousPhysics && step.dt > 0.0) {
          this.SolveTOI(step);
       }
@@ -6764,6 +6774,16 @@ Box2D.postDefs = [];
       this.m_nodeB.next = null;
       this.m_nodeB.other = null;
    }
+   var c = 0;
+   Object.defineProperty(b2Contact.prototype, "m_flags", {
+               enumerable: true
+             , get: function() {
+               return this._m_flags;
+             },
+             set: function(value) {
+                  this._m_flags = value;
+             }
+         });
    b2Contact.prototype.Update = function (listener) {
       var tManifold = this.m_oldManifold;
       this.m_oldManifold = this.m_manifold;
@@ -6774,6 +6794,7 @@ Box2D.postDefs = [];
       var bodyA = this.m_fixtureA.m_body;
       var bodyB = this.m_fixtureB.m_body;
       var aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
+
       if (this.m_flags & b2Contact.e_sensorFlag) {
          if (aabbOverlap) {
             var shapeA = this.m_fixtureA.GetShape();
@@ -6781,6 +6802,7 @@ Box2D.postDefs = [];
             var xfA = bodyA.GetTransform();
             var xfB = bodyB.GetTransform();
             touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB);
+
          }
          this.m_manifold.m_pointCount = 0;
       }
@@ -6793,8 +6815,9 @@ Box2D.postDefs = [];
          }
          if (aabbOverlap) {
             this.Evaluate();
+
             touching = this.m_manifold.m_pointCount > 0;
-            for (var i = 0; i < this.m_manifold.m_pointCount; ++i) {
+                        for (var i = 0; i < this.m_manifold.m_pointCount; ++i) {
                var mp2 = this.m_manifold.m_points[i];
                mp2.m_normalImpulse = 0.0;
                mp2.m_tangentImpulse = 0.0;
@@ -6813,6 +6836,7 @@ Box2D.postDefs = [];
             this.m_manifold.m_pointCount = 0;
          }
          if (touching != wasTouching) {
+            debugger;
             bodyA.SetAwake(true);
             bodyB.SetAwake(true);
          }

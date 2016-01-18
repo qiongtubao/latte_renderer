@@ -5,25 +5,21 @@
    <body onload="init();">
       <canvas id="canvas" width="600" height="400" style="background-color:#333333;" ></canvas>
    </body>
-   <script type="text/javascript" src="./box.js"></script>
+   <script type="text/javascript" src="./latte_renderer.js"></script>
    <script type="text/javascript">
-      
       function init() {
-         var   b2Vec2 = Box2D.Common.Math.b2Vec2
-            ,  b2AABB = Box2D.Collision.b2AABB
-         	,	b2BodyDef = Box2D.Dynamics.b2BodyDef
-         	,	b2Body = Box2D.Dynamics.b2Body
-         	,	b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-         	,	b2Fixture = Box2D.Dynamics.b2Fixture
-         	,	b2World = Box2D.Dynamics.b2World
-         	,	b2MassData = Box2D.Collision.Shapes.b2MassData
-         	,	b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-         	,	b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
-         	,	b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-            ,  b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
-            ;
-         
-         var world = new b2World(
+   	   var b2Vec2 = latte.require("latte_renderer/object/box/common/math/b2Vec2")
+   	   	, b2World = latte.require("latte_renderer/object/box/dynamics/b2World")
+            , b2FixtureDef = latte.require("latte_renderer/object/box/dynamics/b2FixtureDef")
+            , b2BodyDef = latte.require("latte_renderer/object/box/dynamics/b2BodyDef")
+            , b2Body = latte.require("latte_renderer/object/box/dynamics/b2Body")
+            , b2PolygonShape = latte.require("latte_renderer/object/box/collision/shapes/b2PolygonShape")
+            , b2CircleShape = latte.require("latte_renderer/object/box/collision/shapes/b2CircleShape")
+            , b2DebugDraw = latte.require("latte_renderer/object/box/dynamics/b2DebugDraw")
+            , b2AABB = latte.require("latte_renderer/object/box/collision/b2AABB")
+            , b2MouseJointDef = latte.require("latte_renderer/object/box/dynamics/joints/b2MouseJointDef");
+
+   	   	var world = new b2World(
                new b2Vec2(0, 10)    //gravity
             ,  true                 //allow sleep
          );
@@ -36,31 +32,35 @@
          var bodyDef = new b2BodyDef;
          
          //create ground
+         
          bodyDef.type = b2Body.b2_staticBody;
+         
          fixDef.shape = new b2PolygonShape;
          fixDef.shape.SetAsBox(20, 2);
          bodyDef.position.Set(10, 400 / 30 + 1.8);
-         var body = world.CreateBody(bodyDef)
-          ,fixture = body.CreateFixture(fixDef);
+         var body = world.CreateBody(bodyDef);
+         fixture = body.CreateFixture(fixDef);
          bodyDef.position.Set(10, -1.8);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
          fixDef.shape.SetAsBox(2, 14);
          bodyDef.position.Set(-1.8, 13);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
          bodyDef.position.Set(21.8, 13);
-         world.CreateBody(bodyDef).CreateFixture(fixDef);
-         
-         
-         //create some objects
+         var fix = world.CreateBody(bodyDef).CreateFixture(fixDef);
+         console.log(fix.GetMassData());
          bodyDef.type = b2Body.b2_dynamicBody;
+         //create some objects
+         
          /**
          for(var i = 0; i < 10; ++i) {
             if(Math.random() > 0.5) {
-               fixDef.shape = new b2PolygonShape;
+               //debugger;
+               fixDef.shape = new b2PolygonShape();
                fixDef.shape.SetAsBox(
                      Math.random() + 0.1 //half width
                   ,  Math.random() + 0.1 //half height
                );
+               //debugger;
             } else {
                fixDef.shape = new b2CircleShape(
                   Math.random() + 0.1 //radius
@@ -71,31 +71,34 @@
             world.CreateBody(bodyDef).CreateFixture(fixDef);
          }
          */
+         
          fixDef.shape = new b2PolygonShape;
+         
          fixDef.shape.SetAsBox(
              0.3,
              0.3
          );
          bodyDef.position.x = 5;
-         bodyDef.position.y = 5;
+         bodyDef.position.y = 13;
          //world.CreateBody(bodyDef).CreateFixture(fixDef);
-
+         
          fixDef.shape = new b2CircleShape(
             0.3
          );
-         world.CreateBody(bodyDef).CreateFixture(fixDef);
-
+         var qiu = world.CreateBody(bodyDef).CreateFixture(fixDef);
+         console.log(qiu.GetMassData());
 
          //setup debug draw
          var debugDraw = new b2DebugDraw();
-			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
-			debugDraw.SetDrawScale(30.0);
-			debugDraw.SetFillAlpha(0.5);
-			debugDraw.SetLineThickness(1.0);
-			debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-			world.SetDebugDraw(debugDraw);
+         debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+         debugDraw.SetDrawScale(30.0);
+         debugDraw.SetFillAlpha(0.5);
+         debugDraw.SetLineThickness(1.0);
+         debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+         world.SetDebugDraw(debugDraw);
          
-         window.setInterval(update, 1000 / 60);
+         
+         //window.setInterval(update, 1000 / 60);
          
          //mouse
          
@@ -183,16 +186,16 @@
                   mouseJoint = world.CreateJoint(md);
                   body.SetAwake(true);
                   */
-                 var md = new b2MouseJointDef();
-                 md.bodyA = world.GetGroundBody();
-                 md.bodyB = body;
-                 var mouseX = 300;
-                 var mouseY = 0;
-                 md.target.Set(mouseX, mouseY);
-                 md.collideConnected = true;
-                 md.maxForce = 300.0 * body.GetMass();
-                 mouseJoint = world.CreateJoint(md);
-                 body.SetAwake(true);
+                  var md = new b2MouseJointDef();
+                  md.bodyA = world.GetGroundBody();
+                  md.bodyB = body;
+                  var mouseX = 4.97066650390625;
+                  var mouseY = 12.560333251953125;
+                  md.target.Set(mouseX, mouseY);
+                  md.collideConnected = true;
+                  md.maxForce = 300.0 * body.GetMass();
+                  mouseJoint = world.CreateJoint(md);
+                  body.SetAwake(true);
                }
             }
             
@@ -206,6 +209,7 @@
             }
          
             world.Step(1 / 60, 10, 10);
+            //console.log(world);
             world.DrawDebugData();
             world.ClearForces();
          };
@@ -230,8 +234,7 @@
             return {x: x, y: y};
          }
       };
-   
-   </script>
+ 	</script>
    
    
 </html>
